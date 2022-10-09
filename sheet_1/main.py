@@ -23,15 +23,16 @@ test_data = datasets.FashionMNIST(
                                   ]))
 
 train_data_loader = DataLoader(
-    training_data, batch_size=4
+    training_data, batch_size=16
 )
 
 test_data_loader = DataLoader(
-    test_data, batch_size=4
+    test_data, batch_size=16
 )
 
 
 def train_loop(data_loader, model, loss_function, optimizer):
+    model.train()
     n_samples = len(data_loader.dataset)
     n_batches = len(data_loader)
     loss_sum, n_correct = 0, 0
@@ -62,6 +63,7 @@ def train_loop(data_loader, model, loss_function, optimizer):
 
 
 def test_loop(data_loader, model, loss_function):
+    model.eval()
     n_samples = len(data_loader.dataset)
     n_batches = len(data_loader)
     loss, n_correct = 0, 0
@@ -172,8 +174,11 @@ if __name__ == "__main__":
         print(f"Current test loss: {test_loss:.3f}")
         print(f"Tolerance: {tolerance}")
 
+    torch.save(model.state_dict(), "./model_sheet_1.pth")
+
+
     total_list = [train_accuracy_hist, train_loss_hist, test_accuracy_hist, test_loss_hist]
-    with xlsxwriter.Workbook(f"4_adam.xlsx") as workbook:
+    with xlsxwriter.Workbook(f"16_adam.xlsx") as workbook:
         worksheet = workbook.add_worksheet()
 
         for row_num, data in enumerate(total_list):
